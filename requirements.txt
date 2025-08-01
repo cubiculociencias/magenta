@@ -3,3 +3,4 @@ numpy==1.21.6
 pretty_midi==0.2.9
 tensorflow==2.8.0
 soundfile==0.12.1
+gunicorn==20.1.0
