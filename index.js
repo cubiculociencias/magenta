@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
-const mm = require('@magenta/music');
+// Importar los módulos específicos de Magenta para Node
+const core = require('@magenta/music/node/core');
+const music_vae = require('@magenta/music/node/music_vae');
 
 // Cloud Run proporciona el puerto en la variable de entorno PORT
 const port = parseInt(process.env.PORT) || 8080;
@@ -12,12 +14,13 @@ app.get('/', (req, res) => {
 // Endpoint para invocar una función de Magenta (ejemplo)
 app.get('/generar', async (req, res) => {
   try {
-    const music_vae = new mm.MusicVAE('/path/to/checkpoint');
-    await music_vae.initialize();
+    // La documentación sugiere inicializar el modelo de esta forma
+    const vaeModel = new music_vae.MusicVAE('/path/to/checkpoint');
+    await vaeModel.initialize();
     
     // Aquí iría tu lógica con la librería Magenta
     // Por ejemplo, generar una melodía
-    const result = await music_vae.sample(1);
+    const result = await vaeModel.sample(1);
 
     res.json({
       message: 'Melodía generada con éxito',
