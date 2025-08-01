@@ -1,0 +1,5 @@
+Flask
+tensorflow==1.15.5
+numpy
+soundfile
+magenta
