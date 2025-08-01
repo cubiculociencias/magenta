@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 # Health check endpoint (required by Cloud Run)
 @app.route('/_health')
 def health_check():
-    return 'OK', 200
+    return jsonify({"status": "healthy"}), 200
 
 # Initialize model in background
 model = None
