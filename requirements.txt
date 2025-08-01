@@ -1,4 +1,5 @@
-Flask==2.3.3
-numpy
-tensorflow==2.11.0  # Compatible con TFLite
-pretty_midi
+flask==2.0.3
+numpy==1.21.6
+pretty_midi==0.2.9
+tensorflow==2.8.0
+soundfile==0.12.1
