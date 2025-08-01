@@ -1,11 +1,12 @@
-FROM python:3.9-slim
+FROM node:18-slim
 
 WORKDIR /app
-
-COPY requirements.txt ./
-RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY package*.json ./
+RUN npm install --production
 
 COPY . .
 
+ENV PORT=8080
 EXPOSE 8080
-CMD ["python", "app.py"]
+
+CMD ["node", "index.js"]
