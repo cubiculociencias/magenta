@@ -18,7 +18,7 @@ RUN mkdir -p /app/models && \
     https://storage.googleapis.com/magentadata/models/onsets_frames_transcription/tflite/onsets_frames_wavinput.tflite
 
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt gunicorn==20.1.0
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
