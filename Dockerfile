@@ -1,6 +1,10 @@
+# Usa una imagen base de Python
 FROM python:3.9-slim
 
-# Instala dependencias del sistema operativo
+# Crea el directorio de trabajo
+WORKDIR /app
+
+# Instala dependencias del sistema operativo y curl
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     curl \
@@ -8,8 +12,7 @@ RUN apt-get update && \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-# Descarga el modelo DURANTE EL BUILD y lo pone en la carpeta del proyecto
-WORKDIR /app
+# Descarga el modelo DURANTE EL BUILD y lo guarda en /app/models
 RUN mkdir -p /app/models && \
     curl -f -s -S --retry 5 -o /app/models/onsets_frames_wavinput.tflite \
     https://storage.googleapis.com/magentadata/models/onsets_frames_transcription/tflite/onsets_frames_wavinput.tflite
