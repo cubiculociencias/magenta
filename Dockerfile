@@ -1,22 +1,22 @@
-FROM tensorflow/tensorflow:1.15.5-py3
+# Usa una imagen base más reciente pero compatible
+FROM python:3.7-slim
 
 WORKDIR /app
 
-# Instalar herramientas de sistema para compilar paquetes (evita errores como el tuyo)
+# Instala dependencias del sistema
 RUN apt-get update && apt-get install -y \
-    build-essential \
     libsndfile1 \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-# Instalar numpy primero
-RUN pip install --upgrade pip
-RUN pip install numpy
+# Instala TensorFlow y Magenta con versiones específicas
+RUN pip install --upgrade pip && \
+    pip install tensorflow==1.15.5 \
+    magenta==1.1.7 \
+    flask \
+    numpy==1.16.4  # Versión compatible con TF 1.15
 
-# Copiar requirements.txt y luego el resto
-COPY requirements.txt . 
-RUN pip install -r requirements.txt
-
+# Copia el código
 COPY . .
 
 CMD ["python", "main.py"]
