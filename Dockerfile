@@ -1,9 +1,13 @@
-FROM python:3.7-slim
+FROM tensorflow/tensorflow:1.15.5-py3
 
 WORKDIR /app
 
-COPY requirements.txt ./
-RUN pip install --upgrade pip && pip install -r requirements.txt
+COPY requirements.txt .  
+
+# Instalamos numpy primero para evitar errores de dependencias
+RUN pip install --upgrade pip && \
+    pip install numpy && \
+    pip install -r requirements.txt
 
 COPY . .
 
