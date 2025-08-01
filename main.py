@@ -8,10 +8,9 @@ app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Carga el modelo de forma SÍNCRONA al inicio
 MODEL_PATH = "models/onsets_frames_wavinput.tflite"
 
-logger.info("Loading model...")
+logger.info(f"Attempting to load model from: {MODEL_PATH}")
 try:
     model = Model(MODEL_PATH)
     logger.info("Model loaded successfully")
