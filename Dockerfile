@@ -1,23 +1,23 @@
-# Imagen base ligera compatible con Cloud Run
-FROM python:3.10-slim
+FROM python:3.9-slim
 
-# Instalar dependencias del sistema necesarias
-RUN apt-get update && apt-get install -y ffmpeg && apt-get clean
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    libsndfile1 \
+    ffmpeg \
+    && rm -rf /var/lib/apt/lists/*
 
-# Crear carpeta de trabajo
 WORKDIR /app
 
-# Copiar archivos de dependencias
+# Pre-download model to avoid startup delays
+RUN mkdir -p /models && \
+    wget -O /models/onsets_frames_wavinput.tflite \
+    https://storage.googleapis.com/magentadata/models/onsets_frames_transcription/tflite/onsets_frames_wavinput.tflite
+
 COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt gunicorn==20.1.0
 
-# Instalar dependencias de Python
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copiar el código de la aplicación
 COPY . .
 
-# Puerto por defecto de Flask
-ENV PORT=8080
-
-# Comando para lanzar el servidor
-CMD ["python", "main.py"]
+# Use exec form for CMD and explicit port binding
+CMD exec gunicorn --bind :$PORT --timeout 300 --workers 1 --threads 8 app:app
