@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 
 # Cargar el modelo desde la URL pública de GCS
-MODEL_URL = "https://storage.googleapis.com/magentadata/models/onsets_frames_transcription/tflite/onsets_frames_wavinput.tflite"
+MODEL_URL = "https://storage.googleapis.com/magentadata/models/onsets_frames_transcription/tflite/onsets_frames_wavinput_no_offset_uni.tflite"
 interpreter = None
 
 def download_and_load_model():
@@ -22,6 +22,19 @@ def download_and_load_model():
         interpreter = tflite.Interpreter(model_path=tmp.name)
         interpreter.allocate_tensors()
         print("Modelo cargado.")
+
+@app.route('/_health')
+def health_check():
+    return jsonify({"status": "ready"}), 200
+
+# Endpoint de preparación (readyness)
+@app.route('/_ready')
+def ready_check():
+    # Verifica si el modelo está cargado
+    if model_initialized:  # Reemplaza con tu variable de estado
+        return jsonify({"status": "ready"}), 200
+    else:
+        return jsonify({"status": "loading"}), 503
 
 @app.route("/predict", methods=["POST"])
 def predict():
