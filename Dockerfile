@@ -1,23 +1,30 @@
-FROM python:3.9-slim
+# Usa una imagen base oficial de Node.js
+FROM node:18-slim
 
-# Install system dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    libsndfile1 \
-    ffmpeg \
-    && rm -rf /var/lib/apt/lists/*
+# Instala wget para poder descargar archivos
+RUN apt-get update && apt-get install -y wget && rm -rf /var/lib/apt/lists/*
 
+# Crea y establece el directorio de trabajo
 WORKDIR /app
 
-# Pre-download model to avoid startup delays
-RUN mkdir -p /models && \
-    wget -O /models/onsets_frames_wavinput.tflite \
+# Descarga el modelo de Magenta
+RUN mkdir -p /app/modelos && \
+    wget -O /app/modelos/onsets_frames_wavinput.tflite \
     https://storage.googleapis.com/magentadata/models/onsets_frames_transcription/tflite/onsets_frames_wavinput.tflite
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt gunicorn==20.1.0
+# Copia los archivos de manifiesto del proyecto (package.json y package-lock.json)
+# para instalar las dependencias
+COPY package*.json ./
 
+# Instala las dependencias
+RUN npm install
+
+# Copia el resto de los archivos de la aplicación
 COPY . .
 
-# Use exec form for CMD and explicit port binding
-CMD exec gunicorn --bind :$PORT --timeout 300 --workers 1 --threads 8 app:app
+# Cloud Run escuchará en el puerto definido por la variable de entorno $PORT
+ENV PORT 8080
+EXPOSE $PORT
+
+# Define el comando para ejecutar tu aplicación
+CMD ["npm", "start"]
