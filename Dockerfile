@@ -1,6 +1,6 @@
 FROM python:3.9-slim
 
-# 1. Install wget first
+# Install system dependencies including wget
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
     wget \
@@ -8,7 +8,7 @@ RUN apt-get update && \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-# 2. Then download the model
+# Pre-download model during build
 RUN mkdir -p /models && \
     wget -O /models/onsets_frames_wavinput.tflite \
     https://storage.googleapis.com/magentadata/models/onsets_frames_transcription/tflite/onsets_frames_wavinput.tflite
@@ -19,7 +19,8 @@ RUN pip install --no-cache-dir -r requirements.txt gunicorn==20.1.0
 
 COPY . .
 
-ENV PORT=8080
-EXPOSE 8080
+# Health check endpoint
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD curl -f http://localhost:$PORT/_health || exit 1
 
 CMD ["gunicorn", "--bind", ":$PORT", "--timeout", "300", "--workers", "1", "app:app"]
