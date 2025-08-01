@@ -1,4 +1,4 @@
-# Usa una imagen base más reciente pero compatible
+# Usa una imagen base con Python 3.7 (compatible con TensorFlow 1.15)
 FROM python:3.7-slim
 
 WORKDIR /app
@@ -9,14 +9,11 @@ RUN apt-get update && apt-get install -y \
     ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
-# Instala TensorFlow y Magenta con versiones específicas
+# Instala pip y las dependencias con versiones específicas
 RUN pip install --upgrade pip && \
-    pip install tensorflow==1.15.5 \
-    magenta==1.1.7 \
-    flask \
-    numpy==1.16.4  # Versión compatible con TF 1.15
+    pip install numpy==1.16.4 tensorflow==1.15.5 magenta==1.1.7 flask==2.0.3
 
-# Copia el código
+# Copia el código (evita copiar antes de instalar dependencias)
 COPY . .
 
 CMD ["python", "main.py"]
