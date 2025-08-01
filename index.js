@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
 app.get('/generar', async (req, res) => {
   try {
     // La documentación sugiere inicializar el modelo de esta forma
-    const vaeModel = new music_vae.MusicVAE('/path/to/checkpoint');
+    const vaeModel = new music_vae.MusicVAE('https://storage.googleapis.com/magentadata/models/onsets_frames_transcription/tflite/onsets_frames_wavinput.tflite');
     await vaeModel.initialize();
     
     // Aquí iría tu lógica con la librería Magenta
