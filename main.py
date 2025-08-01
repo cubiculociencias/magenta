@@ -2,8 +2,11 @@ from flask import Flask, jsonify
 import os
 import logging
 from utils.tflite_model import Model
+from flask_cors import CORS  # <-- Añade esta línea
 
 app = Flask(__name__)
+
+CORS(app)  # <-- Añade esta línea para habilitar CORS
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
